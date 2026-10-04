@@ -7,6 +7,8 @@ import {
   Minimize2,
   Cpu,
   GraduationCap,
+  Layers,
+  Info,
 } from 'lucide-react';
 import { useAnatomyStore } from '../store/useAnatomyStore';
 import type { ViewPreset } from '../types/anatomy';
@@ -23,6 +25,11 @@ export const Header: React.FC = () => {
     setIsMbbsHubOpen,
     startTour,
     telemetry,
+    isLeftSidebarOpen,
+    toggleLeftSidebar,
+    isRightSidebarOpen,
+    toggleRightSidebar,
+    selectedStructureId,
   } = useAnatomyStore();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -62,60 +69,76 @@ export const Header: React.FC = () => {
       className="glass-panel"
       style={{
         height: '56px',
-        margin: '12px 16px 0 16px',
-        padding: '0 16px',
+        margin: '10px 12px 0 12px',
+        padding: '0 12px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         zIndex: 30,
         position: 'relative',
+        gap: '8px',
       }}
     >
-      {/* Brand & Title */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div
-          style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 14px rgba(0, 240, 255, 0.4)',
-          }}
+      {/* Left: Sidebar Toggle + Brand & Title */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        {/* Toggle Systems & Hierarchy Tree Drawer */}
+        <button
+          id="btn-toggle-left-sidebar"
+          className={`btn-icon ${isLeftSidebarOpen ? 'active' : ''}`}
+          onClick={toggleLeftSidebar}
+          title={isLeftSidebarOpen ? 'Hide Body Systems Panel' : 'Show Body Systems & Hierarchy'}
+          style={{ width: '34px', height: '34px', flexShrink: 0 }}
         >
-          <Activity size={18} color="#060913" strokeWidth={2.5} />
-        </div>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 700, fontSize: '0.92rem', letterSpacing: '0.04em' }}>
-              ANATOMA
-            </span>
-            <span
-              style={{
-                fontSize: '0.65rem',
-                color: 'var(--accent-cyan)',
-                background: 'rgba(0, 240, 255, 0.1)',
-                padding: '1px 6px',
-                borderRadius: '4px',
-                border: '1px solid rgba(0, 240, 255, 0.25)',
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-              }}
-            >
-              DIGITAL TWIN 4.0
-            </span>
+          <Layers size={17} />
+        </button>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 14px rgba(0, 240, 255, 0.4)',
+              flexShrink: 0,
+            }}
+          >
+            <Activity size={18} color="#060913" strokeWidth={2.5} />
           </div>
-          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-            BodyParts3D & FMA Ontological 3D Atlas
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontWeight: 800, fontSize: '0.92rem', letterSpacing: '0.04em' }}>
+                ANATOMA
+              </span>
+              <span
+                className="desktop-only"
+                style={{
+                  fontSize: '0.62rem',
+                  color: 'var(--accent-cyan)',
+                  background: 'rgba(0, 240, 255, 0.1)',
+                  padding: '1px 5px',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(0, 240, 255, 0.25)',
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                }}
+              >
+                4.0
+              </span>
+            </div>
+            <div className="desktop-only" style={{ fontSize: '0.66rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+              FMA Ontological 3D Atlas
+            </div>
           </div>
         </div>
       </div>
 
       {/* Center: Search & Presets */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        {/* Search trigger button */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+        {/* Search trigger button (Responsive: pill on desktop, compact icon/pill on mobile) */}
         <button
           id="btn-search-trigger"
           onClick={() => setIsSearchOpen(true)}
@@ -124,17 +147,23 @@ export const Header: React.FC = () => {
             background: 'rgba(15, 23, 42, 0.75)',
             border: '1px solid var(--border-subtle)',
             color: 'var(--text-secondary)',
-            padding: '6px 14px',
-            minWidth: '220px',
+            padding: '6px 10px',
             justifyContent: 'space-between',
+            gap: '8px',
           }}
-          title="Press / to search"
+          title="Press / or click to search anatomical structures"
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Search size={14} color="var(--accent-cyan)" />
-            <span style={{ fontSize: '0.78rem' }}>Search anatomy, FMA ID...</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Search size={15} color="var(--accent-cyan)" />
+            <span className="desktop-only" style={{ fontSize: '0.78rem' }}>
+              Search anatomy, FMA...
+            </span>
+            <span className="mobile-only" style={{ fontSize: '0.74rem' }}>
+              Search
+            </span>
           </div>
           <span
+            className="desktop-only"
             style={{
               fontSize: '0.65rem',
               background: 'rgba(255, 255, 255, 0.08)',
@@ -147,8 +176,9 @@ export const Header: React.FC = () => {
           </span>
         </button>
 
-        {/* View Presets Selector */}
+        {/* View Presets Selector (Desktop & Tablet landscape) */}
         <div
+          className="desktop-only"
           style={{
             display: 'flex',
             background: 'rgba(11, 17, 32, 0.7)',
@@ -168,11 +198,12 @@ export const Header: React.FC = () => {
                 color: viewPreset === p.id ? 'var(--accent-cyan)' : 'var(--text-secondary)',
                 border: viewPreset === p.id ? '1px solid rgba(0, 240, 255, 0.4)' : '1px solid transparent',
                 borderRadius: '6px',
-                padding: '4px 9px',
-                fontSize: '0.72rem',
+                padding: '4px 8px',
+                fontSize: '0.7rem',
                 cursor: 'pointer',
                 fontWeight: viewPreset === p.id ? 600 : 400,
                 transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap',
               }}
             >
               {p.label}
@@ -181,10 +212,11 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Controls: Gender, Tours, Diagnostics & Fullscreen */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {/* Gender Toggle */}
+      {/* Right Controls: Gender, MBBS Viva Hub, Tours, Telemetry, Fullscreen, Inspector Toggle */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+        {/* Gender Toggle (Hidden on very narrow mobile, visible on desktop/laptop) */}
         <div
+          className="hide-on-mobile"
           style={{
             display: 'flex',
             background: 'rgba(11, 17, 32, 0.7)',
@@ -201,8 +233,8 @@ export const Header: React.FC = () => {
               color: gender === 'male' ? '#38bdf8' : 'var(--text-muted)',
               border: 'none',
               borderRadius: '5px',
-              padding: '4px 8px',
-              fontSize: '0.72rem',
+              padding: '4px 7px',
+              fontSize: '0.7rem',
               cursor: 'pointer',
               fontWeight: 500,
             }}
@@ -217,8 +249,8 @@ export const Header: React.FC = () => {
               color: gender === 'female' ? '#f43f5e' : 'var(--text-muted)',
               border: 'none',
               borderRadius: '5px',
-              padding: '4px 8px',
-              fontSize: '0.72rem',
+              padding: '4px 7px',
+              fontSize: '0.7rem',
               cursor: 'pointer',
               fontWeight: 500,
             }}
@@ -234,29 +266,30 @@ export const Header: React.FC = () => {
           onClick={() => setIsMbbsHubOpen(true)}
           style={{
             fontSize: '0.72rem',
-            padding: '5px 12px',
+            padding: '5px 10px',
             background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(59, 130, 246, 0.15) 100%)',
             border: '1px solid rgba(0, 240, 255, 0.45)',
             color: 'var(--accent-cyan)',
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 0 12px rgba(0, 240, 255, 0.2)',
+            gap: '5px',
+            boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)',
           }}
           title="Open MBBS 1st Prof Clinical Anatomy Hub (Viva Cards & Cunningham Dissection Planes)"
         >
           <GraduationCap size={15} />
-          <span>MBBS Viva Hub</span>
+          <span className="desktop-only">MBBS Viva Hub</span>
+          <span className="mobile-only">MBBS</span>
         </button>
 
         {/* Guided Tours Dropdown */}
         <div style={{ position: 'relative' }}>
           <button
             id="btn-guided-tours"
-            className="btn-glow"
+            className="btn-glow hide-on-mobile"
             onClick={() => setIsToursDropdownOpen(!isToursDropdownOpen)}
-            style={{ fontSize: '0.72rem', padding: '5px 10px' }}
+            style={{ fontSize: '0.72rem', padding: '5px 9px' }}
           >
             <Compass size={14} />
             <span>Tours</span>
@@ -334,7 +367,7 @@ export const Header: React.FC = () => {
         {/* Telemetry / Stress Test Button */}
         <button
           id="btn-stress-test"
-          className="btn-icon"
+          className="btn-icon hide-on-mobile"
           onClick={() => setIsStressTestOpen(true)}
           title={`Engine Telemetry: ${telemetry.fps} FPS, ${telemetry.drawCalls} calls`}
         >
@@ -344,11 +377,41 @@ export const Header: React.FC = () => {
         {/* Fullscreen Button */}
         <button
           id="btn-fullscreen"
-          className="btn-icon"
+          className="btn-icon hide-on-mobile"
           onClick={toggleFullscreen}
           title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
         >
           {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+        </button>
+
+        {/* Toggle Right Inspector Drawer Button */}
+        <button
+          id="btn-toggle-right-sidebar"
+          className={`btn-icon ${isRightSidebarOpen ? 'active' : ''}`}
+          onClick={toggleRightSidebar}
+          title={isRightSidebarOpen ? 'Hide Anatomy Inspector' : 'Show Anatomy Inspector'}
+          style={{
+            width: '34px',
+            height: '34px',
+            position: 'relative',
+            borderColor: selectedStructureId ? 'var(--accent-cyan)' : undefined,
+          }}
+        >
+          <Info size={17} />
+          {selectedStructureId && (
+            <span
+              style={{
+                position: 'absolute',
+                top: '4px',
+                right: '4px',
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: 'var(--accent-cyan)',
+                boxShadow: '0 0 6px var(--accent-cyan)',
+              }}
+            />
+          )}
         </button>
       </div>
     </header>

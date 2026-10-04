@@ -97,36 +97,41 @@ export const OrganViewport3D: React.FC<OrganViewport3DProps> = ({
       {/* 3D Canvas Mount Point */}
       <div
         ref={mountRef}
+        id="organ-canvas-container"
         style={{
           width: '100%',
           height: '100%',
           position: 'absolute',
           top: 0,
           left: 0,
+          touchAction: 'none',
         }}
       />
 
-      {/* Top Floating Badge */}
+      {/* Top Floating Badge (Hidden on mobile to avoid pill collisions) */}
       <div
+        className="desktop-only"
         style={{
           position: 'absolute',
-          top: '20px',
+          top: '16px',
           left: '50%',
           transform: 'translateX(-50%)',
           background: 'rgba(15, 23, 42, 0.75)',
           backdropFilter: 'blur(12px)',
           border: '1px solid rgba(56, 189, 248, 0.25)',
           borderRadius: '9999px',
-          padding: '6px 18px',
+          padding: '5px 16px',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
           color: '#e2e8f0',
-          fontSize: '13px',
+          fontSize: '12px',
           fontWeight: 600,
           letterSpacing: '0.03em',
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
           pointerEvents: 'none',
+          whiteSpace: 'nowrap',
+          zIndex: 10,
         }}
       >
         <span
@@ -147,16 +152,18 @@ export const OrganViewport3D: React.FC<OrganViewport3DProps> = ({
       <div
         style={{
           position: 'absolute',
-          top: '20px',
-          right: '20px',
-          background: 'rgba(15, 23, 42, 0.8)',
+          top: '10px',
+          right: '10px',
+          background: 'rgba(15, 23, 42, 0.85)',
           backdropFilter: 'blur(12px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '12px',
-          padding: '4px',
+          borderRadius: '10px',
+          padding: '3px',
           display: 'flex',
-          gap: '4px',
+          gap: '3px',
           zIndex: 10,
+          maxWidth: 'calc(100vw - 20px)',
+          overflowX: 'auto',
         }}
       >
         {[
@@ -174,12 +181,13 @@ export const OrganViewport3D: React.FC<OrganViewport3DProps> = ({
               background: activePreset === item.id ? 'rgba(56, 189, 248, 0.25)' : 'transparent',
               border: activePreset === item.id ? '1px solid #38bdf8' : '1px solid transparent',
               color: activePreset === item.id ? '#38bdf8' : '#94a3b8',
-              borderRadius: '8px',
-              padding: '4px 10px',
+              borderRadius: '6px',
+              padding: '3px 8px',
               fontSize: '11px',
               fontWeight: 600,
               cursor: 'pointer',
               transition: 'all 0.15s ease',
+              whiteSpace: 'nowrap',
             }}
           >
             {item.label}
@@ -191,19 +199,22 @@ export const OrganViewport3D: React.FC<OrganViewport3DProps> = ({
       <div
         style={{
           position: 'absolute',
-          bottom: '24px',
+          bottom: '12px',
           left: '50%',
           transform: 'translateX(-50%)',
-          background: 'rgba(15, 23, 42, 0.85)',
+          background: 'rgba(15, 23, 42, 0.88)',
           backdropFilter: 'blur(16px)',
           border: '1px solid rgba(255, 255, 255, 0.12)',
-          borderRadius: '16px',
-          padding: '6px 10px',
+          borderRadius: '14px',
+          padding: '5px 8px',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '6px',
           boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
           zIndex: 10,
+          maxWidth: 'calc(100vw - 20px)',
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         {/* Ultra-Smooth Zoom In (+) */}
@@ -411,8 +422,9 @@ export const OrganViewport3D: React.FC<OrganViewport3DProps> = ({
         </div>
       )}
 
-      {/* Interactive Helper Text */}
+      {/* Interactive Helper Text (Desktop Only) */}
       <div
+        className="desktop-only"
         style={{
           position: 'absolute',
           bottom: '24px',

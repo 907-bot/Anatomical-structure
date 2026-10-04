@@ -22,6 +22,12 @@
   
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Mobile Safe Area Insets */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
 * {
@@ -209,3 +215,84 @@ input[type="range"]::-webkit-slider-thumb:hover {
   margin: 0 auto;
   box-shadow: 0 0 6px var(--accent-cyan);
 }
+
+/* 3D Canvas Touch Action Optimization */
+canvas,
+#canvas-3d-container,
+#viewport-3d-root {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+/* Off-canvas Mobile Drawer Backdrop */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 45;
+  transition: opacity 0.25s ease;
+}
+
+/* Mobile Slide-in Drawer Animations */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-105%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(105%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  /* Compact tap buttons on phone */
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-glow {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+  }
+}
+

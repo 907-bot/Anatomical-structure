@@ -33,6 +33,7 @@ export const Viewport3D: React.FC = () => {
     activeTourId,
     currentTourStepIndex,
     pageMode,
+    isRightSidebarOpen,
   } = useAnatomyStore();
 
   // 1. Initialize Anatomy Engine once
@@ -173,12 +174,13 @@ export const Viewport3D: React.FC = () => {
         id="smooth-zoom-controls"
         style={{
           position: 'absolute',
-          bottom: '96px',
-          right: '360px',
+          bottom: 'calc(80px + var(--safe-bottom))',
+          right: typeof window !== 'undefined' && window.innerWidth >= 1024 && isRightSidebarOpen ? '356px' : '16px',
           display: 'flex',
           flexDirection: 'column',
           gap: '8px',
           zIndex: 15,
+          transition: 'right 0.2s ease',
         }}
       >
         <button

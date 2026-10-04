@@ -52,14 +52,15 @@ export const BottomDock: React.FC = () => {
       id="bottom-dock-container"
       style={{
         position: 'absolute',
-        bottom: '16px',
+        bottom: 'calc(12px + var(--safe-bottom))',
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 30,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '8px',
+        gap: '6px',
+        maxWidth: 'calc(100vw - 16px)',
       }}
     >
       {/* Popover Slider: Exploded View */}
@@ -67,12 +68,13 @@ export const BottomDock: React.FC = () => {
         <div
           className="glass-panel"
           style={{
-            padding: '10px 16px',
-            width: '260px',
+            padding: '10px 14px',
+            width: 'min(280px, calc(100vw - 28px))',
             display: 'flex',
             flexDirection: 'column',
             gap: '6px',
             marginBottom: '4px',
+            boxSizing: 'border-box',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
@@ -98,12 +100,13 @@ export const BottomDock: React.FC = () => {
         <div
           className="glass-panel"
           style={{
-            padding: '12px 16px',
-            width: '300px',
+            padding: '12px 14px',
+            width: 'min(310px, calc(100vw - 28px))',
             display: 'flex',
             flexDirection: 'column',
             gap: '10px',
             marginBottom: '4px',
+            boxSizing: 'border-box',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
@@ -160,12 +163,13 @@ export const BottomDock: React.FC = () => {
         <div
           className="glass-panel"
           style={{
-            padding: '12px 16px',
-            width: '290px',
+            padding: '12px 14px',
+            width: 'min(300px, calc(100vw - 28px))',
             display: 'flex',
             flexDirection: 'column',
             gap: '8px',
             marginBottom: '4px',
+            boxSizing: 'border-box',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
@@ -261,8 +265,12 @@ export const BottomDock: React.FC = () => {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          padding: '6px 10px',
+          gap: '5px',
+          padding: '5px 8px',
+          maxWidth: 'calc(100vw - 16px)',
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none',
         }}
       >
         {/* Reset Camera */}

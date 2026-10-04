@@ -26,16 +26,16 @@ export const TourPlayer: React.FC = () => {
       className="glass-panel glass-panel-active"
       style={{
         position: 'absolute',
-        top: '80px',
+        top: 'calc(68px + var(--safe-top))',
         left: '50%',
         transform: 'translateX(-50%)',
-        width: '480px',
-        maxWidth: '90vw',
+        width: 'min(480px, calc(100vw - 24px))',
         zIndex: 40,
-        padding: '14px 18px',
+        padding: '12px 14px',
         display: 'flex',
         flexDirection: 'column',
         gap: '8px',
+        boxSizing: 'border-box',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

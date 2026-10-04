@@ -71,7 +71,9 @@ export const SearchModal: React.FC = () => {
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        paddingTop: '100px',
+        padding: '12px',
+        paddingTop: 'calc(48px + var(--safe-top))',
+        boxSizing: 'border-box',
       }}
     >
       <div
@@ -79,8 +81,7 @@ export const SearchModal: React.FC = () => {
         className="glass-panel"
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: '540px',
-          maxWidth: '92vw',
+          width: 'min(540px, calc(100vw - 24px))',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',

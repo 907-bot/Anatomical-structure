@@ -86,7 +86,8 @@ export const MbbsHubModal: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '24px',
+        padding: '10px',
+        boxSizing: 'border-box',
       }}
       onClick={() => setIsMbbsHubOpen(false)}
     >
@@ -94,9 +95,8 @@ export const MbbsHubModal: React.FC = () => {
         id="mbbs-hub-modal"
         className="glass-panel"
         style={{
-          width: '920px',
-          maxWidth: '100%',
-          maxHeight: '88vh',
+          width: 'min(920px, calc(100vw - 16px))',
+          maxHeight: '92vh',
           display: 'flex',
           flexDirection: 'column',
           borderRadius: '16px',

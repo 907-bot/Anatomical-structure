@@ -36,6 +36,8 @@ interface AnatomyState {
   isHierarchyExpanded: boolean;
   leftSidebarTab: 'systems' | 'hierarchy';
   isMbbsHubOpen: boolean;
+  isLeftSidebarOpen: boolean;
+  isRightSidebarOpen: boolean;
 
   // Guided Tours
   activeTourId: string | null;
@@ -76,6 +78,10 @@ interface AnatomyState {
   setLeftSidebarTab: (tab: 'systems' | 'hierarchy') => void;
   setIsHierarchyExpanded: (expanded: boolean) => void;
   setIsMbbsHubOpen: (open: boolean) => void;
+  setIsLeftSidebarOpen: (open: boolean) => void;
+  toggleLeftSidebar: () => void;
+  setIsRightSidebarOpen: (open: boolean) => void;
+  toggleRightSidebar: () => void;
   applyDissectionStage: (stage: DissectionStage) => void;
   startTour: (tourId: string) => void;
   nextTourStep: () => void;
@@ -150,6 +156,8 @@ export const useAnatomyStore = create<AnatomyState>((set, get) => ({
   isHierarchyExpanded: true,
   leftSidebarTab: 'systems',
   isMbbsHubOpen: false,
+  isLeftSidebarOpen: typeof window !== 'undefined' ? window.innerWidth >= 1024 : true,
+  isRightSidebarOpen: typeof window !== 'undefined' ? window.innerWidth >= 1024 : true,
 
   activeTourId: null,
   currentTourStepIndex: 0,
@@ -170,6 +178,9 @@ export const useAnatomyStore = create<AnatomyState>((set, get) => ({
 
   selectStructure: (id) => {
     set({ selectedStructureId: id });
+    if (id && typeof window !== 'undefined' && window.innerWidth < 1024) {
+      set({ isRightSidebarOpen: true, isLeftSidebarOpen: false });
+    }
   },
 
   hoverStructure: (id) => {
@@ -241,6 +252,26 @@ export const useAnatomyStore = create<AnatomyState>((set, get) => ({
   setLeftSidebarTab: (tab) => set({ leftSidebarTab: tab }),
   setIsHierarchyExpanded: (expanded) => set({ isHierarchyExpanded: expanded }),
   setIsMbbsHubOpen: (open) => set({ isMbbsHubOpen: open }),
+  setIsLeftSidebarOpen: (open) => set({ isLeftSidebarOpen: open }),
+  toggleLeftSidebar: () =>
+    set((state) => {
+      const next = !state.isLeftSidebarOpen;
+      const isNarrow = typeof window !== 'undefined' && window.innerWidth < 768;
+      return {
+        isLeftSidebarOpen: next,
+        isRightSidebarOpen: next && isNarrow ? false : state.isRightSidebarOpen,
+      };
+    }),
+  setIsRightSidebarOpen: (open) => set({ isRightSidebarOpen: open }),
+  toggleRightSidebar: () =>
+    set((state) => {
+      const next = !state.isRightSidebarOpen;
+      const isNarrow = typeof window !== 'undefined' && window.innerWidth < 768;
+      return {
+        isRightSidebarOpen: next,
+        isLeftSidebarOpen: next && isNarrow ? false : state.isLeftSidebarOpen,
+      };
+    }),
   applyDissectionStage: (stage) =>
     set({
       visibleSystems: { ...stage.visibilities },

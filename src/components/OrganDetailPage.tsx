@@ -9,6 +9,18 @@ export const OrganDetailPage: React.FC = () => {
   const { selectedStructureId, closeOrganDetail, openOrganDetail } = useAnatomyStore();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'neurovascular' | 'physiology' | 'mbbs' | 'network'>('overview');
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 900 : false
+  );
+  const [mobileView, setMobileView] = useState<'split' | '3d' | 'dossier'>('split');
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 900);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const currentIndex = ANATOMICAL_STRUCTURES.findIndex((s) => s.id === selectedStructureId);
   const structure = currentIndex !== -1 ? ANATOMICAL_STRUCTURES[currentIndex] : ANATOMICAL_STRUCTURES[0];
@@ -71,34 +83,35 @@ export const OrganDetailPage: React.FC = () => {
       {/* ========================================== */}
       <header
         style={{
-          height: '64px',
+          height: isMobile ? '56px' : '64px',
           background: 'rgba(11, 19, 43, 0.95)',
           backdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 24px',
+          padding: isMobile ? '0 12px' : '0 24px',
           zIndex: 60,
           flexShrink: 0,
+          gap: '8px',
         }}
       >
         {/* Left: Return to Full Body Atlas Button */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '16px' }}>
           <button
             onClick={closeOrganDetail}
             style={{
               background: 'rgba(56, 189, 248, 0.12)',
               border: '1px solid rgba(56, 189, 248, 0.35)',
               color: '#38bdf8',
-              padding: '8px 16px',
-              borderRadius: '10px',
-              fontSize: '13px',
+              padding: isMobile ? '6px 10px' : '8px 16px',
+              borderRadius: '8px',
+              fontSize: '12px',
               fontWeight: 600,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              gap: '6px',
               transition: 'all 0.2s ease',
             }}
             onMouseEnter={(e) => {
@@ -110,9 +123,10 @@ export const OrganDetailPage: React.FC = () => {
               e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.35)';
             }}
           >
-            <span style={{ fontSize: '16px' }}>←</span>
-            <span>Back to Full Body Atlas</span>
+            <span style={{ fontSize: '15px' }}>←</span>
+            <span>Atlas</span>
             <kbd
+              className="desktop-only"
               style={{
                 background: 'rgba(0, 0, 0, 0.3)',
                 padding: '2px 6px',
@@ -125,18 +139,25 @@ export const OrganDetailPage: React.FC = () => {
             </kbd>
           </button>
 
-          {/* Breadcrumb Path */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#94a3b8' }}>
+          {/* Breadcrumb Path (Desktop) */}
+          <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#94a3b8' }}>
             <span>Atlas</span>
             <span>/</span>
             <span style={{ color: system?.color || '#38bdf8', fontWeight: 600 }}>{system?.name}</span>
             <span>/</span>
             <span style={{ color: '#f8fafc', fontWeight: 700 }}>{structure.name}</span>
           </div>
+
+          {/* Mobile Title */}
+          <div className="mobile-only" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontWeight: 700, fontSize: '0.86rem', color: '#f8fafc', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {structure.name}
+            </span>
+          </div>
         </div>
 
-        {/* Center: System Badge & Latin Pill */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Center: System Badge & Latin Pill (Desktop) */}
+        <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span
             style={{
               background: `${system?.color || '#38bdf8'}22`,
@@ -180,8 +201,68 @@ export const OrganDetailPage: React.FC = () => {
           </span>
         </div>
 
-        {/* Right: Prev / Next Structure Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {/* Right: Mobile View Toggle + Prev/Next Controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {/* Mobile View Selector */}
+          {isMobile && (
+            <div
+              style={{
+                display: 'flex',
+                background: 'rgba(30, 41, 59, 0.7)',
+                padding: '2px',
+                borderRadius: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                gap: '2px',
+              }}
+            >
+              <button
+                onClick={() => setMobileView('3d')}
+                style={{
+                  background: mobileView === '3d' ? 'rgba(0, 240, 255, 0.25)' : 'transparent',
+                  color: mobileView === '3d' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                  border: 'none',
+                  borderRadius: '5px',
+                  padding: '3px 7px',
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                3D
+              </button>
+              <button
+                onClick={() => setMobileView('split')}
+                style={{
+                  background: mobileView === 'split' ? 'rgba(0, 240, 255, 0.25)' : 'transparent',
+                  color: mobileView === 'split' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                  border: 'none',
+                  borderRadius: '5px',
+                  padding: '3px 7px',
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Split
+              </button>
+              <button
+                onClick={() => setMobileView('dossier')}
+                style={{
+                  background: mobileView === 'dossier' ? 'rgba(0, 240, 255, 0.25)' : 'transparent',
+                  color: mobileView === 'dossier' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                  border: 'none',
+                  borderRadius: '5px',
+                  padding: '3px 7px',
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Notes
+              </button>
+            </div>
+          )}
+
           <button
             onClick={handlePrevOrgan}
             title="Previous Organ (Arrow Left)"
@@ -189,21 +270,19 @@ export const OrganDetailPage: React.FC = () => {
               background: 'rgba(30, 41, 59, 0.6)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               color: '#f8fafc',
-              padding: '6px 12px',
-              borderRadius: '8px',
-              fontSize: '12px',
+              padding: '5px 8px',
+              borderRadius: '6px',
+              fontSize: '11px',
               fontWeight: 600,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
             }}
           >
             <span>‹</span>
-            <span>Prev</span>
           </button>
           <span style={{ fontSize: '11px', color: '#64748b' }}>
-            {currentIndex + 1} / {ANATOMICAL_STRUCTURES.length}
+            {currentIndex + 1}/{ANATOMICAL_STRUCTURES.length}
           </span>
           <button
             onClick={handleNextOrgan}
@@ -212,17 +291,15 @@ export const OrganDetailPage: React.FC = () => {
               background: 'rgba(30, 41, 59, 0.6)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               color: '#f8fafc',
-              padding: '6px 12px',
-              borderRadius: '8px',
-              fontSize: '12px',
+              padding: '5px 8px',
+              borderRadius: '6px',
+              fontSize: '11px',
               fontWeight: 600,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
             }}
           >
-            <span>Next</span>
             <span>›</span>
           </button>
         </div>
@@ -231,43 +308,62 @@ export const OrganDetailPage: React.FC = () => {
       {/* ========================================== */}
       {/* 2. MAIN WORKSPACE: 3D CENTER STAGE + DOSSIER */}
       {/* ========================================== */}
-      <div style={{ flex: 1, display: 'flex', position: 'relative', overflow: 'hidden' }}>
-        {/* Left/Center: 3D Viewport with Single Organ Centered */}
-        <div style={{ flex: 1, height: '100%', position: 'relative' }}>
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* 3D Viewport with Single Organ Centered */}
+        <div
+          style={{
+            flex: isMobile ? (mobileView === '3d' ? 1 : mobileView === 'split' ? undefined : 0) : 1,
+            height: isMobile ? (mobileView === '3d' ? '100%' : mobileView === 'split' ? '40vh' : '0') : '100%',
+            display: isMobile && mobileView === 'dossier' ? 'none' : 'block',
+            position: 'relative',
+            flexShrink: 0,
+          }}
+        >
           <OrganViewport3D structureId={structure.id} structureName={structure.name} />
         </div>
 
-        {/* Right: Rich Medical & Clinical Dossier */}
+        {/* Right / Bottom: Rich Medical & Clinical Dossier */}
         <aside
           style={{
-            width: '460px',
-            height: '100%',
-            background: 'rgba(10, 15, 30, 0.94)',
+            width: isMobile ? '100%' : '460px',
+            flex: isMobile ? (mobileView === '3d' ? 0 : 1) : undefined,
+            height: isMobile ? (mobileView === '3d' ? '0' : undefined) : '100%',
+            display: isMobile && mobileView === '3d' ? 'none' : 'flex',
+            background: 'rgba(10, 15, 30, 0.96)',
             backdropFilter: 'blur(24px)',
-            borderLeft: '1px solid rgba(255, 255, 255, 0.08)',
-            display: 'flex',
+            borderLeft: isMobile ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: isMobile ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
             flexDirection: 'column',
             overflow: 'hidden',
             zIndex: 20,
+            minHeight: 0,
           }}
         >
           {/* Dossier Header */}
           <div
             style={{
-              padding: '20px 24px 16px',
+              padding: isMobile ? '12px 16px 10px' : '20px 24px 16px',
               borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
               <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Clinical & Anatomical Dossier
               </span>
               <span style={{ fontSize: '11px', color: '#64748b' }}>Category: {structure.category}</span>
             </div>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 4px', color: '#f8fafc', letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: isMobile ? '20px' : '24px', fontWeight: 800, margin: '0 0 4px', color: '#f8fafc', letterSpacing: '-0.02em' }}>
               {structure.name}
             </h1>
-            <p style={{ margin: 0, fontSize: '14px', color: '#94a3b8', fontStyle: 'italic' }}>
+            <p style={{ margin: 0, fontSize: isMobile ? '13px' : '14px', color: '#94a3b8', fontStyle: 'italic' }}>
               {structure.latinName}
             </p>
           </div>
@@ -276,11 +372,13 @@ export const OrganDetailPage: React.FC = () => {
           <div
             style={{
               display: 'flex',
-              padding: '8px 16px 0',
+              padding: '6px 14px 0',
               borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
               gap: '4px',
               background: 'rgba(15, 23, 42, 0.5)',
               overflowX: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'none',
             }}
           >
             {[
@@ -316,10 +414,11 @@ export const OrganDetailPage: React.FC = () => {
             style={{
               flex: 1,
               overflowY: 'auto',
-              padding: '24px',
+              WebkitOverflowScrolling: 'touch',
+              padding: isMobile ? '16px' : '24px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '20px',
+              gap: '18px',
             }}
           >
             {/* TAB 1: OVERVIEW & MORPHOLOGY */}

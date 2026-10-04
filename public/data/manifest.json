@@ -1,0 +1,7 @@
+{
+  "dataset": "BodyParts3D / FMA Anatomy Digital Twin",
+  "version": "4.0",
+  "license": "CC BY 4.0",
+  "totalStructures": 42,
+  "ontology": "Foundational Model of Anatomy (FMA)"
+}
